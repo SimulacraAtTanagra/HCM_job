@@ -1,5 +1,3 @@
-#new script for performing CF actions
-
 from time import sleep
 from seltools import mydriver,main
 from cunydatatools import jsrename
@@ -196,7 +194,8 @@ class jobsummary(hcm,main):
         return(self.outer_instance.survey())
     def nav(self):
         self.outer_instance.nav(self.url,self.searchfield)
-    def downloader(self,emplid):
+    
+    def downloader(self,emplid):    #TODO modify to accept multiple values
         self.data_distribute({"CU_JOB_SUM_SRCH_EMPLID":f'{emplid}'})
         self.waitid(self.search)
         self.wait_spin()
@@ -208,7 +207,8 @@ class jobsummary(hcm,main):
         self.nav()
 
 class reports(object):
-    
+    #TODO fill this out with all basic HCM reports
+    #TODO Use code from CJR, either implemented in base class or lcoally
     def __init__(self, outer_instance):
         self.outer_instance = outer_instance
         self.driver=self.outer_instance.driver
@@ -227,23 +227,6 @@ class reports(object):
     class cjr(object):
         url="https://hrsa.cunyfirst.cuny.edu/psp/cnyhcprd/EMPLOYEE/HRMS/c/CU_HCM.CU_R1013.GBL"
             
-def createdict(process_item):
-    if type(process_item)=='list':
-        empldict={}    
-        empldict["EMPLMT_SRCH_COR_EMPLID"]=process_item[2]
-        empldict["EMPLMT_SRCH_COR_EMPL_RCD"]=process_item[5]
-        empldict["JOB_EFFDT$0"]=process_item[0]
-        empldict['JOB_ACTION$0']='Data Change'
-        empldict["JOB_ACTION_REASON$0"]="Revision"
-        empldict["JOB_EXPECTED_END_DATE$0"]=process_item[6]
-        empldict["CU_JOB_JR_CU_APPOINT_HRS$0"]=process_item[7]
-    else:
-        objlist=["EMPLMT_SRCH_COR_EMPLID","EMPLMT_SRCH_COR_EMPL_RCD","JOB_EFFDT$0",
-                 'JOB_ACTION$0',"JOB_ACTION_REASON$0","JOB_EXPECTED_END_DATE$0",
-                 "CU_JOB_JR_CU_APPOINT_HRS$0"]
-        empldict={obj:process_item[obj] for obj in objlist}
-    return(empldict)   
-
 def parse_hr_trans(df):
     df=df[(df.Action=="Termination")&(df['Action Reason']=='Mass System Termination')]    
     df['code']= df['Employee ID'].astype('str')+df['Empl RCD'].astype('str')

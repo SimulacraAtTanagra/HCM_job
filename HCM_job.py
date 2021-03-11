@@ -4,12 +4,12 @@ Created on Thu Mar 11 17:17:21 2021
 
 @author: shane
 """
-from src.HCM_main import hcm
-from src.seltools import mydriver,main
+from HCM_main import hcm
+from seltools import mydriver,main
 from datetime import datetime, timedelta
 from time import sleep
 import time
-from src.CF_PR_datapipeline import pr_data
+from CF_PR_datapipeline import pr_data
 
 
 
@@ -30,31 +30,23 @@ class jobpages(hcm,main):
     def add_row(self):
         self.switch_tar()
         self.waitid('$ICField12$new$0$$0')
-        
-    def swbdict(empldict,datething,seq):
-            if empldict['JOB_EFFDT$0']==datething:
-                seq=str(int(seq)+1)
-            else:
-                seq="0"
-            empldict2={**empldict,**{"JOB_EFFSEQ$0":seq}}
-            empldict2['JOB_ACTION$0']='Return From Work Break'
-            empldict2["JOB_ACTION_REASON$0"]='Return From Work Break'
-            seq=str(int(seq)+1)
-            empldict={**empldict,**{"JOB_EFFSEQ$0":seq}}
-            return(empldict,empldict2)
-    def return_from(self,empldict):
-        self.add_row()
-        self.cf_data_distribute(empldict)
-        self.cf_save[0]
-    def return_switch(self):
-        try:
-            self.driver.switch_to.frame('TargetContent')
-        except:
-            self.driver.switch_to.default_content()
-    
-    def reappointment(self,dt=None,ation=None,reason=None,appthrs=None,prohrs=None):
-        if dt:
-            print("do soething here shane")
+    def createdict(self,process_item):
+        if type(process_item)=='list':
+            empldict={}    
+            empldict["EMPLMT_SRCH_COR_EMPLID"]=process_item[2]
+            empldict["EMPLMT_SRCH_COR_EMPL_RCD"]=process_item[5]
+            empldict["JOB_EFFDT$0"]=process_item[0]
+            empldict['JOB_ACTION$0']='Data Change'
+            empldict["JOB_ACTION_REASON$0"]="Revision"
+            empldict["JOB_EXPECTED_END_DATE$0"]=process_item[6]
+            empldict["CU_JOB_JR_CU_APPOINT_HRS$0"]=process_item[7]
+        else:
+            objlist=["EMPLMT_SRCH_COR_EMPLID","EMPLMT_SRCH_COR_EMPL_RCD","JOB_EFFDT$0",
+                     'JOB_ACTION$0',"JOB_ACTION_REASON$0","JOB_EXPECTED_END_DATE$0",
+                     "CU_JOB_JR_CU_APPOINT_HRS$0"]
+            empldict={obj:process_item[obj] for obj in objlist}
+        return(empldict)   
+
     def deletion_new(self):
         #step 1 - go into correction mode
         self.switch_tar()
@@ -141,6 +133,25 @@ class jobpages(hcm,main):
                 if self.gettext("JOB_EMPL_STATUS$0")=='Terminated':
                     self.deletion()
                 self.nav()
+                
+    def random_click(self):     #doesn't $&@!ing work.
+        self.driver.execute_script('el = document.elementFromPoint(440, 120); el.click();')
+
+    def reappointment(self,dt=None,ation=None,reason=None,appthrs=None,prohrs=None):
+        if dt:
+            print("do soething here shane")
+    
+    def return_from(self,empldict):
+        self.add_row()
+        self.cf_data_distribute(empldict)
+        self.cf_save[0]
+        
+    def return_switch(self):
+        try:
+            self.driver.switch_to.frame('TargetContent')
+        except:
+            self.driver.switch_to.default_content()    
+    
     def revision(self,empldict):
         #TODO speed datadistribute by using page-specific data
         #TODO make visiting all pages mandatory if ther eis data from them
@@ -178,8 +189,19 @@ class jobpages(hcm,main):
         sleep(1)
         self.nav()
         
-    def random_click(self):     #doesn't fucking work.
-        self.driver.execute_script('el = document.elementFromPoint(440, 120); el.click();')
+    def swbdict(empldict,datething,seq):
+        if empldict['JOB_EFFDT$0']==datething:
+            seq=str(int(seq)+1)
+        else:
+            seq="0"
+        empldict2={**empldict,**{"JOB_EFFSEQ$0":seq}}
+        empldict2['JOB_ACTION$0']='Return From Work Break'
+        empldict2["JOB_ACTION_REASON$0"]='Return From Work Break'
+        seq=str(int(seq)+1)
+        empldict={**empldict,**{"JOB_EFFSEQ$0":seq}}
+        return(empldict,empldict2)
+
+    #below are fields in the Job Data area pages for easy reference.
     class workloc:
         effdt="JOB_EFFDT$0"
         seq="JOB_EFFSEQ$0"
@@ -203,9 +225,6 @@ class jobpages(hcm,main):
         subject="HR_NP_NOTE_HR_NP_SUBJECT$0"
         text="HR_NP_NOTE_HR_NP_NOTE_TEXT$0"
         save="DERIVED_HR_NP_HR_NP_SAVE_PB"
-        
-        
-        
     class jobinfo:
         empl_class="JOB_EMPL_CLASS$0"
         officer="JOB_OFFICER_CD$0"
@@ -250,6 +269,10 @@ class jobpages(hcm,main):
     class emp_data:
         override_orig_dt="PER_ORG_INST_ORIG_HIRE_OVR$0"
         orig_dt="PER_ORG_INST_ORIG_HIRE_DT$0"
+    
+
+
+
 
 def main(USERNAME,PASSWORD,download_dir=None):
     if download_dir:
@@ -286,7 +309,7 @@ def main(USERNAME,PASSWORD,download_dir=None):
             job.nav()
         print("Currently at : %s seconds using given test case" % (time.time() - start_time))
     job.driver.quit()   #using quit instead of close because 2 windows.
-       
+      
 
 if __name__=='__main__':
     main(USERNAME,PASSWORD)
