@@ -109,6 +109,6 @@ def pr_data(filefolder,flag=None):
     
     #and turning into records specifically for automating
 if __name__=="__main__":
-    filefolder="c:\\users\\shane\\downloads"
+    filefolder="c:\\change\\this\\path"
     listoftups=pr_data(filefolder,flag=True)
     listofdicts=pr_data(filefolder)
