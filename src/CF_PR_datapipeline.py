@@ -10,7 +10,9 @@ import numpy as np
 from admin import colclean, newest,rehead,read_json
 from datetime import datetime
 
-
+#TODO map the PR-Assist departments to HCM departments
+#TODO add automated retrieval to cover the front end of this pipeline
+#TODO 
 
 def pr_data(filefolder,flag=None):
     #getting the data that appears on the PAF
