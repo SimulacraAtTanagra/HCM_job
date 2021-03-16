@@ -84,6 +84,7 @@ def pr_data(filefolder,flag=None):
     together['later']=pd.to_datetime(together['later'])
     #TODO fix this hardcoded clusterfuck, shane
     thisdf=together[together.date>together.later][~together.rcd.str.contains('',na=False)][together.paf_type.str.contains('Revision',na=False)]
+    #TODO make thisa dictionary lookup to convert data on action/reason into CF-compatible
     thisdf['action']='Data Change'
     thisdf=thisdf[['empl_id','rcd','date', 'action','paf_type','end_date','bgt_hrs']]
     listoftups=list(thisdf.to_records(index=False))
