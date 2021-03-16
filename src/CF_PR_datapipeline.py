@@ -16,6 +16,7 @@ from datetime import datetime
 
 def pr_data(filefolder,flag=None):
     #getting the data that appears on the PAF
+    #TODO when automatically retrieving this data, please also change the name
     cols=['date', 'ctrl', 'last_nasme', 'first_nm', 'emplid', 'hcm_dept',
        'program_name', 'action', 'original', 'title', 'begin_date', 'end_date',
        'payserv_position_#:', 'budget_line_#:', 'ledger', 'fis_dept',
@@ -57,15 +58,16 @@ def pr_data(filefolder,flag=None):
     
     together['combo']=together['empl_id'].astype('str')+together['dept_id_job'].astype('str')
     #and grabbing CF data to get record
-    df=colclean(rehead(pd.read_excel(newest(filefolder,"FULL_FILE")),2))
+    df=colclean(rehead(pd.read_excel(newest(filefolder,"FULL_FILE"),engine='xlrd'),2))
     #removing unnecessary columns
     ndf=df[['empl_id', 'empl_rcd','effdt_job', 'effseq_job','jobcode_cd','dept_id_job','action_ld','action_reason_ld']]
     ndf.empl_id=ndf.empl_id.astype('O')
+    deletions=ndf[ndf.jobcode_cd=='500050'][ndf.action_reason_ld.str.contains("Mass System Termination")]
     ndf=ndf[ndf.jobcode_cd=='500050'][~ndf.action_reason_ld.str.contains("Mass System Termination")]
     ndf['combo']=ndf['empl_id'].astype('str')+ndf['dept_id_job'].astype('str')
     ndf.effdt=pd.to_datetime(ndf.effdt_job)
     
-    deletions=ndf[ndf.jobcode_cd=='500050'][ndf.action_reason_ld.str.contains("Mass System Termination")]
+    
     
     cols=["EMPLMT_SRCH_COR_EMPLID","EMPLMT_SRCH_COR_EMPL_RCD","JOB_EFFDT$0",
                  'JOB_ACTION$0',"JOB_ACTION_REASON$0","JOB_EXPECTED_END_DATE$0",
@@ -109,6 +111,6 @@ def pr_data(filefolder,flag=None):
     
     #and turning into records specifically for automating
 if __name__=="__main__":
-    filefolder="c:\\change\\this\\path"
+    filefolder=DIR
     listoftups=pr_data(filefolder,flag=True)
     listofdicts=pr_data(filefolder)

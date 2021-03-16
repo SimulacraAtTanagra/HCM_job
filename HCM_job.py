@@ -81,9 +81,11 @@ class jobpages(hcm,main):
         else:
             term="Reappointment"
         while x==y:
+            print("attempting to update action")
             self.data_distribute({"JOB_ACTION$0":term})
             y=self.dropdownitembyid("JOB_ACTION$0")
             self.cf_save(1)
+        print('action updated')
         termdict={"Data Change":"Revision","Reappointment":"Reappointment"}
         term=termdict[term]
         #step -6 changing reason
@@ -92,9 +94,11 @@ class jobpages(hcm,main):
         x=self.dropdownitembyid("JOB_ACTION_REASON$0")
         y=self.dropdownitembyid("JOB_ACTION_REASON$0")
         while y==x:
+            print('attempting to update reason')
             self.data_distribute({"JOB_ACTION_REASON$0":term})
             y=self.dropdownitembyid("JOB_ACTION_REASON$0")
             self.cf_save(1)
+        print('reason updated')
         #changing to Data Change/ Revision ALWAYS returns end date, thus remove
         self.switch_tar()
         z=self.getvals("JOB_EXPECTED_END_DATE$0")
@@ -274,7 +278,7 @@ class jobpages(hcm,main):
 
 
 
-def main(USERNAME,PASSWORD,download_dir=None):
+def main(USERNAME,PASSWORD,download_dir=None,tups=None,dicts=None):
     if download_dir:
         download_dir=download_dir
     else:
@@ -284,9 +288,13 @@ def main(USERNAME,PASSWORD,download_dir=None):
     home.loginnow()
     job=jobpages(home.driver)
     job.nav()
-    filefolder=""
-    listoftups=pr_data(filefolder,flag=True)    #these are deletions
-    listofdicts=pr_data(filefolder) #these are additions
+    if tups or dicts:
+        listoftups=tups
+        listofdicts=dicts
+    else:
+        filefolder=download_dir
+        listoftups=pr_data(filefolder,flag=True)    #these are deletions
+        listofdicts=pr_data(filefolder) #these are additions
     #currently this process only supports data from PR-Assist
     #TODO bridge AEMS into pr_data process or design duplicate
     for ix,i in enumerate(listoftups):
@@ -312,4 +320,4 @@ def main(USERNAME,PASSWORD,download_dir=None):
       
 
 if __name__=='__main__':
-    main(USERNAME,PASSWORD)
+    main(USERNAME,PASSWORD,download_dir=DIR,tups=listoftups,dicts=listofdicts)

@@ -216,19 +216,18 @@ class main:
             select = Select(WebDriverWait(self.driver, delay).until(EC.element_to_be_clickable((By.ID, idstr))))
             select.select_by_visible_text(selected)
             select.send_keys(Keys.TAB)
-            self.okay2()
+            select = Select(WebDriverWait(self.driver, delay).until(EC.element_to_be_clickable((By.ID, idstr))))
+            self.cf_save(1)
+            return(True)
         except NoSuchElementException:
-            self.okay2()
-            self.driver.switch_to.default_content()
+            self.cf_save(1)
+            self.switch_tar()
             self.dropdownselector(idstr,selected)
         except ElementClickInterceptedException:
-            self.okay2()
+            self.cf_save(1)
             self.dropdownselector(idstr,selected)
         except:
             pass
-        finally:
-            self.switch_tar()
-            self.dropdownselector(idstr,selected)
 
     def framenav(self,num):
         self.driver.switch_to.default_content()
@@ -643,7 +642,16 @@ class main:
             myElem.click()
         except TimeoutException as e:
                 return(e)
-    
+    def waittext(self,idstr):
+        delay = 3 
+        try:
+            myElem = WebDriverWait(self.driver, delay).until(EC.element_to_be_clickable((By.ID, idstr)))
+            return(myElem.text)
+        except TimeoutException as e:
+                return(e)
+        except ElementClickInterceptedException:
+            self.okay()
+            self.waitid(idstr)       
     def windowswitch(self,elemstr,num):
         #go to top level domain
         self.driver.switch_to.default_content()
