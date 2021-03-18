@@ -320,4 +320,4 @@ def main(USERNAME,PASSWORD,download_dir=None,tups=None,dicts=None):
       
 
 if __name__=='__main__':
-    main(USERNAME,PASSWORD,download_dir=DIR,tups=listoftups,dicts=listofdicts)
+    main(USERNAME,PASSWORD,download_dir=DIR)
