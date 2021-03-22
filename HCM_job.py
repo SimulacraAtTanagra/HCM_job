@@ -4,12 +4,12 @@ Created on Thu Mar 11 17:17:21 2021
 
 @author: shane
 """
-from HCM_main import hcm
-from seltools import mydriver,main
+from src.HCM_main import hcm
+from src.seltools import mydriver,main
 from datetime import datetime, timedelta
 from time import sleep
 import time
-from CF_PR_datapipeline import pr_data
+from src.CF_PR_datapipeline import pr_data
 
 
 
