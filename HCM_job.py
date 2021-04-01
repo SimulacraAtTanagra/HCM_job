@@ -4,12 +4,12 @@ Created on Thu Mar 11 17:17:21 2021
 
 @author: shane
 """
-from src.HCM_main import hcm
-from src.seltools import mydriver,main
+from HCM_main import hcm
+from seltools import mydriver,main
 from datetime import datetime, timedelta
 from time import sleep
 import time
-from src.CF_PR_datapipeline import pr_data
+from CF_PR_datapipeline import pr_data
 
 
 
@@ -206,6 +206,7 @@ class jobpages(hcm,main):
         return(empldict,empldict2)
 
     #below are fields in the Job Data area pages for easy reference.
+    #TODO convert to dictionary. Unnecessary class designation just to store info
     class workloc:
         effdt="JOB_EFFDT$0"
         seq="JOB_EFFSEQ$0"
@@ -277,7 +278,7 @@ class jobpages(hcm,main):
 
 
 
-
+#TODO update main to be interruptable without data loss from CF_PR_DP
 def main(USERNAME,PASSWORD,download_dir=None,tups=None,dicts=None):
     if download_dir:
         download_dir=download_dir
