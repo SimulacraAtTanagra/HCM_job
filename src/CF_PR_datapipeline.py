@@ -24,11 +24,13 @@ def pr_data(filefolder,flag=None):
        'budget_source3', 'hours_1', 'hours_2', 'hours_3', 'subtotal',
        'subtotal.1', 'subtotal.2', 'hourscombo', 'rate', 'total_cost',
        'student_status', 'report_to', 'sep_date']
+    #this is the report from printing all PAFs
     pafs=pd.read_excel(newest(filefolder,"paf_data"),header=None)
     pafs=pafs[[3,5,9,10,11,14,15,18,19,23,24,25,32,33,34,35,36,37,39,41,
                    43,45,47,49,51,53,55,58,59,61,63,65,68]]
     pafs.columns=cols
     #and some of the background data we also need to feed CF
+    #this is the report from Reports > Employee PAF Listing
     tl=colclean(pd.read_excel(newest(filefolder,"tl_data")))
     #merging
     collist=['date','hcm_dept','program_name', 'action', 'title',
