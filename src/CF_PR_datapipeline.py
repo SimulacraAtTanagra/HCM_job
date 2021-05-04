@@ -64,8 +64,8 @@ def pr_data(filefolder,flag=None):
     #removing unnecessary columns
     ndf=df[['empl_id', 'empl_rcd','effdt_job', 'effseq_job','jobcode_cd','dept_id_job','action_ld','action_reason_ld']]
     ndf.empl_id=ndf.empl_id.astype('O')
-    deletions=ndf[ndf.jobcode_cd=='500050'][ndf.action_reason_ld.str.contains("Mass System Termination")]
-    ndf=ndf[ndf.jobcode_cd=='500050'][~ndf.action_reason_ld.str.contains("Mass System Termination")]
+    deletions=ndf[ndf.jobcode_cd.str.startswith('500')][ndf.action_reason_ld.str.contains("Mass System Termination")]
+    ndf=ndf[ndf.jobcode_cd.str.startswith('500')][~ndf.action_reason_ld.str.contains("Mass System Termination")]
     ndf['combo']=ndf['empl_id'].astype('str')+ndf['dept_id_job'].astype('str')
     ndf.effdt=pd.to_datetime(ndf.effdt_job)
     
