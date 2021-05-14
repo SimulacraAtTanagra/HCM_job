@@ -318,7 +318,32 @@ def main(USERNAME,PASSWORD,download_dir=None,tups=None,dicts=None):
             job.nav()
         print("Currently at : %s seconds using given test case" % (time.time() - start_time))
     job.driver.quit()   #using quit instead of close because 2 windows.
-      
+
+def optional_main(USERNAME,PASSWORD,download_dir=None,tups=None,dicts=None):
+    if download_dir:
+        download_dir=download_dir
+    else:
+        download_dir="C:\\insert\\default\\folder\\here"
+    driver=mydriver.setupbrowser(mydriver(download_dir))
+    home=hcm(driver,un=USERNAME,pw=PASSWORD)
+    home.loginnow()
+    job=jobpages(home.driver)
+    job.nav()
+    if dicts:
+        listofdicts=dicts
+    else:
+        listofdicts=[]
+    for ix,i in enumerate(listofdicts):
+        start_time = time.time()
+        try:
+            job.revision(i)
+            print(f'completing item {ix}.')    
+        except:
+            print(f'error with item {ix}')
+            job.nav()
+        print("Currently at : %s seconds using given test case" % (time.time() - start_time))
+    job.driver.quit()   #using quit instead of close because 2 windows.
 
 if __name__=='__main__':
-    main(USERNAME,PASSWORD,download_dir=DIR)
+    #main(USERNAME,PASSWORD,download_dir=DIR)
+    optional_main(USERNAME,PASSWORD,download_dir=DIR,dicts=listofdicts)

@@ -104,8 +104,8 @@ def pr_data(filefolder,flag=None):
     for tup in listoftups:
         tupdict={}
         for ix,i in enumerate(tup):
-            if len(str(i))==29:
-                i=datetime.strptime(str(i)[:10],'%Y-%M-%d').strftime('%M/%d/%Y')
+            #if len(str(i))==29:
+            #    i=datetime.strptime(str(i)[:10],'%Y-%M-%d').strftime('%M/%d/%Y')
             tupdict.update({cols[ix]:str(i)})
         listofdicts.append(tupdict)
     return(listofdicts)
